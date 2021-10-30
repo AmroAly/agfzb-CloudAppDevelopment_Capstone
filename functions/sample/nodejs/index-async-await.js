@@ -20,3 +20,7 @@
      }
  
  }
+
+ function main(params) {
+	return {...params, "query": { "selector": { "st": params.state } } };
+}

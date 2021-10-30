@@ -10,15 +10,17 @@
 from cloudant.client import Cloudant
 from cloudant.error import CloudantException
 import requests
+import os
 
 
-def main(dict):
+def main(dict=None):
     databaseName = "dealerships"
 
     try:
         client = Cloudant.iam(
             account_name=dict["COUCH_USERNAME"],
             api_key=dict["IAM_API_KEY"],
+            url=dict['COUCH_URL'],
             connect=True,
         )
         print("Databases: {0}".format(client.all_dbs()))
@@ -30,3 +32,5 @@ def main(dict):
         return {"error": err}
 
     return {"dbs": client.all_dbs()}
+
+print(main())
