@@ -141,3 +141,5 @@ server/djangoapp/migrations/
 server/djangoapp/migrations/
 
 functions/sample/nodejs/node_modules/
+functions/sample/nodejs/node_modules/*
+node_modules
