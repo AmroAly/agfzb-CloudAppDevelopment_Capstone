@@ -9,6 +9,8 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from .restapis import *
+import random
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -36,8 +38,21 @@ def contact(request):
 # Create a `login_request` view to handle sign in request
 def login_request(request):
     context = {}
-    if request.method == "GET":
-        return render(request, 'djangoapp/login.html', context)
+    # if request.method == "GET":
+    #     return render(request, 'djangoapp/login.html', context)
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('djangoapp:index')
+        else:
+            context['message'] = "Invalid username or password."
+            return render(request, 'djangoapp/index.html', context)
+    else:
+        return render(request, 'djangoapp/index.html', context)
+
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
@@ -75,14 +90,48 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "https://4a74f413.us-south.apigw.appdomain.cloud/api/dealerships/dealerships"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
+        # return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
+def get_dealer_details(request, dealer_id):
+    context = {}
+    if request.method == "GET":
+        
+        url = "https://4a74f413.us-south.apigw.appdomain.cloud/api/dealerships/review?dealerId="+str(dealer_id)
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        return HttpResponse(reviews[0].sentiment)
+        # return error message if dealerId is not a nummeric value
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    if request.user.is_authenticated:
+        url = 'https://4a74f413.us-south.apigw.appdomain.cloud/api/dealerships/review'
+        review = {}
+        # append data to review
+        review['id'] = random.randint(100, 1000000000)
+        review["time"] = datetime.utcnow().isoformat()
+        review['name'] = 'test name'
+        review['dealership'] = dealer_id
+        review['review'] = 'very very good review'
+        review['purchase'] = 'tesla model x'
+        review['another'] = 'test another'
+        review['purchase_date'] = datetime.utcnow().isoformat()
+        review['car_make'] = 'Tesla'
+        review['car_model'] = 'model x'
+        review['car_year'] = '2021'
 
+        json_data = {}
+        json_data['review'] = review
+        response = post_request(url, json_payload=json_data, dealer_id=dealer_id)
+        return HttpResponse(response)

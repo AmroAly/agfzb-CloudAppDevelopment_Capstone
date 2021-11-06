@@ -32,10 +32,11 @@
         </div>
 
         {% if not user.is_authenticated %}
-        <form class="form-inline">
-            <input class="form-control mr-sm-2" type="text" placeholder="username" aria-label="username">
-            <input class="form-control mr-sm-2" type="password" placeholder="password" aria-label="password">
-            <a class="btn btn-primary my-2 my-sm-0 m-1" href="{% url 'djangoapp:login' %}">Login</a>
+        <form class="form-inline" method="POST" action="{% url 'djangoapp:login' %}">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" name="username" type="text" placeholder="username" aria-label="username">
+            <input class="form-control mr-sm-2" name="password" type="password" placeholder="password" aria-label="password">
+            <button class="btn btn-primary my-2 my-sm-0 m-1" type="submit">Login</button>
             <a class="btn btn-outline-primary my-2 my-sm-0 m-1" href="{% url 'djangoapp:signup' %}">Sign Up</a>
           </form>
           {% else %}
