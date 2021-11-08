@@ -51,9 +51,19 @@
           {% endif %}
         </nav>
     <!--Add a dealer table here -->
-
-    {% block content %}{% endblock %}
-    
+    <br>
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
     </body>
 
+    <script>
+      $(function() {
+        $('#table').bootstrapTable()
+      })
+      $('.date-own').datepicker({
+          format: 'mm/dd/yyyy'
+      });
+   </script>
 </html>

@@ -1,5 +1,32 @@
 {% extends 'djangoapp/base.html' %}
 
 {% block content %}
-<h1>homepage</h1>
+<h1 class="text-center">Dealers</h1>
+
+<table class="table" id="table" data-filter-control="true">
+    <thead>
+      <tr>
+        <th data-field="id">ID</th>
+        <th data-field="dealername">Dealer Name</th>
+        <th data-field="city">City</th>
+        <th data-field="address">Adderss</th>
+        <th data-field="zip">ZIP</th>
+        <th data-field="state" data-filter-control="select">State</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for dealer in dealerships %}
+        <tr>
+            <td>{{ dealer.id }}</td>
+            <td>
+                <a href="{% url 'djangoapp:dealer_reviews' dealer.id %}">{{ dealer.full_name }}</a>
+            </td>
+            <td>{{ dealer.city }}</td>
+            <td>{{ dealer.address }}</td>
+            <td>{{ dealer.zip }}</td>
+            <td>{{ dealer.state }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}

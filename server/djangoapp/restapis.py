@@ -69,7 +69,7 @@ def get_dealers_from_cf(url, **kwargs):
                 dealer_obj = CarDealer(address= dealer.get("address"), city= dealer.get("city"), full_name= dealer.get("full_name"),
                                     id= dealer.get("id"), lat= dealer.get("lat"), long= dealer.get("long"),
                                     short_name= dealer.get("short_name"),
-                                    st= dealer.get("st"), zip= dealer.get("zip"))
+                                    st= dealer.get("st"), zip= dealer.get("zip"), state=dealer.get('state'))
                 results.append(dealer_obj)
 
     return results
@@ -87,13 +87,16 @@ def get_dealer_reviews_from_cf(url, dealerId):
         # Get the row list in JSON as dealers
         reviews = json_result["rows"]
         for review in reviews:
-                review_obj = DealerReview(dealership= review.get("dealership"), name= review.get("name"), purchase= review.get("purchase"),
-                                    purchase_date= review.get("purchase_date"), car_make= review.get("car_make"), car_model= review.get("car_model"),
-                                    review= review.get("review"),
-                                    car_year= review.get("car_year"), id= review.get("id"))
-                sentiment = analyze_review_sentiments(review_obj.review)
+            review_obj = DealerReview(dealership= review.get("dealership"), name= review.get("name"), purchase= review.get("purchase"),
+                                purchase_date= review.get("purchase_date"), car_make= review.get("car_make"), car_model= review.get("car_model"),
+                                review= review.get("review"),
+                                car_year= review.get("car_year"), id= review.get("id"))
+            sentiment = analyze_review_sentiments(review_obj.review)
+            if sentiment:
                 review_obj.sentiment = sentiment['sentiment']['document']['label']
-                results.append(review_obj)
+            else:
+                review_obj.sentiment = 'neutral'
+            results.append(review_obj)
     return results
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 # def analyze_review_sentiments(text):
