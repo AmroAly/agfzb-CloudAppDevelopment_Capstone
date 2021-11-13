@@ -1,4 +1,6 @@
- FROM python:3.8.2
+#!/bin/bash
+ 
+FROM python:3.8.2
 
     ENV PYTHONBUFFERED 1
     ENV PYTHONWRITEBYTECODE 1
