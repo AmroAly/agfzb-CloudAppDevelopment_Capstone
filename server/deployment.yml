@@ -20,7 +20,7 @@ spec:
         run: dealership
     spec:
       containers:
-      - image: uk.icr.io/capstone_registry/dealership:latest
+      - image: us.icr.io/capstone_project/dealership:latest
         imagePullPolicy: Always
         name: dealership
         ports:
