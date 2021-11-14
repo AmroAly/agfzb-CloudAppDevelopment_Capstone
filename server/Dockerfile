@@ -1,4 +1,3 @@
-#!/bin/bash
  
 FROM python:3.8.2
 
@@ -16,7 +15,7 @@ FROM python:3.8.2
     # Install the requirements
     COPY requirements.txt $APP
     RUN pip install --upgrade pip
-    RUN pip install -r requirements.txt
+    RUN pip3 install -r requirements.txt
 
     # Copy the rest of the files
     COPY . $APP
@@ -26,4 +25,4 @@ FROM python:3.8.2
     RUN chmod +x /app/entrypoint.sh
     ENTRYPOINT ["/app/entrypoint.sh"]
 
-    CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "djangobackend.wsgi"]
+    CMD ["gunicorn", "--bind", "127.0.0.1:8000", "--workers", "3", "djangobackend.wsgi"]
